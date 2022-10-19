@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Install configuration dotfiles into user directory.
+# Install configuration dotfiles into user home directory.
 # Usage: ./install_dotfiles.sh
 #
 # Yu Shiyang <yu.shiyang@gnayihs.uy>
@@ -8,7 +8,7 @@
 # Make a copy of a file with a tilde added to its filename.
 # If a file of the new name already exists, do not make a copy.
 # This function is idempotent.
-# Usage: tildemore <filename>
+# Usage: tildeless <filename>
 tildeless() {
 	file="$1"
 	if [ ! -e "$file" ]; then
@@ -73,8 +73,7 @@ local_patch_append() {
 	fi
 }
 
-# Install a new file, either by replacing an existing file, appending to an existing file or patching an existing file.
-# The action performed depends on the extension of the new file; *.append for append, *.patch for patch, and everything else for replace.
+# Install a new file, then apply any local patches and appends in the same directory.
 # Usage: install_file <source_file> <filename_after_install>
 install_file() {
 	source="$1"
