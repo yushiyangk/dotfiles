@@ -16,6 +16,12 @@ You do need two more commands (git commit and push) when editing files. But pull
 
 All commands shown below should be run in the Dotfiles directory, unless otherwise noted. A basic understanding of git is strongly recommended.
 
+### Why not just sync the home directory?
+
+The main benefit of Dotfiles is in its [ability to automatically apply local patches to different systems.](#custom-configuration-for-a-specific-system), while syncing the rest of the configuration.
+
+Having a separate repository to edit configuration files in also makes breakages more easily recoverable.
+
 ## Contents
 
 - [Setup](#setup)
