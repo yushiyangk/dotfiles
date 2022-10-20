@@ -12,13 +12,13 @@
 2. Commit and push with git
 3. Sync configuration files by running `./sync_dotfiles.sh`
 
-You do need two more commands (git commit and push) when editing files. But pulls are automatic, and *syncing and installing files takes a single command!*
+You do need a few commands when editing files (git commit and push). But pulls are automatic, and *syncing and installing files takes a single command!*
 
 All commands shown below should be run in the Dotfiles directory, unless otherwise noted. A basic understanding of git is strongly recommended.
 
 ### Why not just sync the home directory?
 
-The main benefit of Dotfiles is in its [ability to automatically apply local patches to different systems.](#custom-configuration-for-a-specific-system), while syncing the rest of the configuration.
+The main benefit of Dotfiles is in its [ability to automatically apply local patches to different systems](#custom-configuration-for-a-specific-system), while syncing the rest of the configuration.
 
 Having a separate repository to edit configuration files in also makes breakages more easily recoverable.
 
@@ -37,7 +37,7 @@ In a parent directory, run
 git clone https://github.com/yushiyangk/dotfiles.git
 ```
 
-Note that this *does not* install any configuration files in your home directory. To install files, [the sync and install command is described below](#syncing-and-installing-files).
+Note that this does not install any configuration files in your home directory. To install files, [the sync and install command is described below](#syncing-and-installing-files).
 
 Set up your personal repository by following the next section, or by following the [alternative method under Advanced usage](#setting-up-a-linked-repository).
 
@@ -45,7 +45,7 @@ Set up your personal repository by following the next section, or by following t
 
 Create a new repository on a git hosting service of your choice (e.g. GitHub or GitLab), and note down its git URL.
 
-Replace the original repository with your personal one by running
+Replace the original remote repository with your personal one by running
 <code><pre>git remote set-url origin <var>new_remote_url</var></pre></code>
 
 This assumes that the original remote was named `origin` by default. If it defaulted to a different name, simply use that instead (see the current list of remotes by running `git remote`).
@@ -60,15 +60,15 @@ For each configuration file that needs to be synced, copy it into the `Unix` sub
 
 ### Editing files
 
-Edit the files in the `Unix` subdirectory, then commit it with
-<code><pre>git commit -m <var>commit_message</var></pre></code>
+Edit the files in the `Unix` subdirectory, then commit them as with any other git repository. For example, to commit all modified files,
+<code><pre>git commit -a -m <var>commit_message</var></pre></code>
 
 Sync your personal remote repository by running
 ```
 git push
 ```
 
-<aside><i>If using a linked repository</i>, ensure that you are on your personal branch by running <code>git status</code>.</aside>
+<aside><i>If using a linked repository</i>, first ensure that you are on your personal branch by running <code>git status</code>.</aside>
 
 ### Syncing and installing files
 
@@ -88,15 +88,15 @@ Run
 ./install_dotfiles.sh
 ```
 
-This will install the files currently in the `Unix` subdirectory, without pulling from any remote repository.
+This will install the files currently in the `Unix` subdirectory without pulling from any remote repository.
 
 ### Backups
 
-When installing a configuration file, if a file of the same name is already in your home directory, the original version of the file will be renamed to <code><var>filename</var>~</code> (i.e. a tilde will be added to the filename) as a backup.
+When installing a configuration file, if a file of the same name is already in your home directory, the original version of the file will be renamed to <code><var>filename</var>~</code> (i.e. a tilde will be appended to the filename) as a backup.
 
-If such a backed up file already exists, the existing backup will be untouched, and no new backup will be made. This is intended to back up either default configuration files distributed with the operating system, or user-edited configuration files before they were added to the sync.
+If such a backed up file already exists, the existing backup will not be touched, and no new backup will be made. This is intended to back up either default configuration files distributed with the operating system, or user-edited configuration files before they were added to the sync.
 
-Once configuration files have been added to the sync, backups of previous versions can easily be accessed through the git history (run `git log` to find the hash of the relevant commit, then run <code>git show <var>commit</var>:<var>file</var></code>).
+After configuration files have been added to the sync, backups of previous versions can easily be accessed through the git history (run `git log` to find the hash of the relevant commit, then run <code>git show <var>commit</var>:<var>file</var></code>).
 
 ### Custom configuration for a specific system
 
@@ -104,7 +104,7 @@ Sometimes, it is desirable to make a small change to a configuration file on a s
 
 For each configuration file that needs to be tweaked, create either <code><var>filename</var>.local.patch</code> or <code><var>filename</var>.local.append</code> (or both) in the same directory that the file is installed to. For example, in order to tweak `~/.bashrc`, create either `~/.bashrc.local.patch` or `~/.bashrc.local.append`.
 
-If <code><var>filename</var>.local.patch</code> exists, Dotfiles will attempt to patch the synced configuration file with the patch file. If <code><var>filename</var>.local.append</code> exists, Dotfiles append it to the synced configuration file. If both exist, the patch will be applied first, then the append.
+If <code><var>filename</var>.local.patch</code> exists, Dotfiles will attempt to patch the synced configuration file with the patch file. If <code><var>filename</var>.local.append</code> exists, Dotfiles will append it to the synced configuration file. If both exist, the patch will be applied first, then the append.
 
 #### Creating patch files
 
@@ -114,7 +114,7 @@ One way of creating the patch file would be to first edit the installed configur
 
 ### Setting up a linked repository
 
-This method is more complicated, but has the advantage of being able to receive updates to Dotfiles from the original public repository.
+This method for setting up your personal repository is more complicated, but has the advantage of being able to receive updates to Dotfiles from the original public repository.
 
 Create a new personal repository on a git hosting service of your choice (e.g. GitHub or GitLab), and note down its git URL.
 
@@ -127,9 +127,11 @@ git push --set-upstream <var>your_remote_name</var> <var>your_branch_name</var><
 
 Thereafter, add or edit your personal configuration files as before, but only commit them to your personal branch and push them to your personal remote. If you have followed the above, you will already be checked out on your personal branch, and can simply run `git commit` and `git push` as usual to do so.
 
+**Warning**: Do not use GitHub's "fork repository" function as that will make your personal configuration files accessible to everyone else.
+
 #### Updating Dotfiles
 
-If using a linked repository, you can update Dotfiles as easily.
+If using a linked repository, you can update Dotfiles easily.
 
 Remain on your personal branch (or run <code>git checkout <var>your_branch_name</var></code>), and run the following:
 <code><pre>git fetch origin public:public
