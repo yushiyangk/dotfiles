@@ -10,7 +10,7 @@
 
 1. Edit configuration files in the `Unix` subdirectory
 2. Commit and push with git
-3. Sync configuration files by running `./update_dotfiles.sh`
+3. Sync configuration files by running `./sync_dotfiles.sh`
 
 You do need two more commands (git commit and push) when editing files. But pulls are automatic, and *syncing and installing files takes a single command!*
 
@@ -74,7 +74,7 @@ git push
 
 Run the command
 ```
-./update_dotfiles.sh
+./sync_dotfiles.sh
 ```
 
 This will pull the configuration files from your personal remote repository, then automatically install them into your home directory.
