@@ -44,7 +44,7 @@ tildeless() {
 		cp -a "$tildefile" "$file"
 		chmod a-wx "$tildefile"
 	else
-		echo "tildemore: $file is not a file or a directory" 1>&2
+		echo "tildeless: $file is not a file or a directory" 1>&2
 		return 2
 	fi
 }
@@ -123,7 +123,6 @@ install_file() {
 	local_patch_append "$installed"
 }
 
-export -f tildemore
 export -f tildeless
 export -f local_patch_append
 export -f install_file
@@ -131,14 +130,13 @@ export -f install_file
 base_path="$1"
 base_path="${base_path:-Unix}"
 
-# `bash -c 'command $0' arg` executes command with arg as the first argument
-# ${VAR#pattern} returns VAR with the shortest matching pattern stripped from the front
-# "{}" should be in the form of `Unix/.dotfilename`
+# `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
+# `${<VAR>#<pattern>}`` returns <VAR> with the shortest string that matches <pattern> stripped from the front
+# `"{}"`` would be any file in `Unix/` by default
 find "$base_path" -type f -exec bash -c 'install_file "$1/${0#*/}" "$HOME/${0#*/}"' "{}" "$base_path" \;
 
 unset base_path
 
-unset tildemore
 unset tildeless
 unset local_patch_append
 unset install_file
