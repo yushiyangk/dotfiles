@@ -16,7 +16,7 @@ A basic understanding of git is strongly recommended.
 
 ### Why not just sync the home directory?
 
-Dotfiles allow you to [automatically apply system-specific configs](#system-specific-configurations) while syncing the rest.
+Dotfiles allow you to [automatically apply system-specific configs](#system-specific-configs) while syncing the rest.
 
 By editing config files in a separate directory and then installing them, Dotfiles also makes breakages more easily recoverable.
 
@@ -31,7 +31,7 @@ By editing config files in a separate directory and then installing them, Dotfil
 	- [Syncing and installing config files](#syncing-and-installing-config-files)
 - [Advanced usage](#advanced-usage)
 	- [Install local config files without syncing](#install-local-config-files-without-syncing)
-	- [System-specific configurations](#system-specific-configurations)
+	- [System-specific configs](#system-specific-configs)
 	- [Linked personal remote repository](#linked-personal-remote-repository)
 	- [Backups](#backups)
 
@@ -97,9 +97,9 @@ Run
 
 This will install the files currently in the `Unix` subdirectory without pulling from any remote repository.
 
-### System-specific configurations
+### System-specific configs
 
-System-specific configurations can be applied using **local patches** and **local appends**.
+System-specific configs can be applied using **local patches** and **local appends**.
 
 For each config file with system-specific tweaks, create either <code><var>filename</var>.local.patch</code> or <code><var>filename</var>.local.append</code> (or both) in the same directory that the file is installed to. For example, in order to tweak `~/.bashrc`, create either `~/.bashrc.local.patch` or `~/.bashrc.local.append`.
 
