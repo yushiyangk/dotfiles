@@ -127,15 +127,78 @@ export -f tildeless
 export -f local_patch_append
 export -f install_file
 
-base_path="$1"
-base_path="${base_path:-posix}"
+
+name='install_dotfiles.sh'
+
+help="Usage: $name [-h] [<options>] [<target>]"
+help="$help\nInstall the current version of dotfiles to the appropriate locations"
+help="$help\n"
+help="$help\nParameters:"
+help="$help\n  <target>        Target label that describes the local system, which also"
+help="$help\n                  corresponds to the subdirectory of the same name;"
+help="$help\n                  default: posix"
+help="$help\n"
+help="$help\nOptions:"
+help="$help\n  -h, -?, --help  Display this help message and exit"
+
+
+target='posix'
+quiet=0
+
+argi=0
+while [ $# -gt 0 ]; do
+	arg="$1"
+	case "$arg" in
+		--help)
+			echo -e "$help"
+			exit 0
+			;;
+		--quiet)
+			((++quiet))
+			;;
+		--*)
+			echo "$name: invalid option '$arg'" >& 2
+			exit 2
+			;;
+		-*)
+			for i in $(seq 1 $((${#arg} - 1))); do
+				flag="${arg:$i:1}"
+				case "$flag" in
+					h|\?)
+						echo -e "$help"
+						exit 0
+						;;
+					q)
+						((++quiet))
+						;;
+					*)
+						echo "$name: invalid option '$flag'" >& 2
+						exit 2
+				esac
+			done
+			;;
+		*)
+			case "$argi" in
+				0)
+					target="$arg"
+					;;
+				*)
+					echo "$name: unexpected parameter '$arg'" >& 2
+					exit 2
+					;;
+			esac
+			((++argi))
+	esac
+	shift
+done
+
 
 # `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
 # `${<VAR>#<pattern>}`` returns <VAR> with the shortest string that matches <pattern> stripped from the front
 # `"{}"`` would be any file in `posix/` by default
-find "$base_path" -type f -exec bash -c 'install_file "$1/${0#*/}" "$HOME/${0#*/}"' "{}" "$base_path" \;
+find "$target" -type f -exec bash -c 'install_file "$1/${0#*/}" "$HOME/${0#*/}"' "{}" "$target" \;
 
-unset base_path
+unset target
 
 unset tildeless
 unset local_patch_append
