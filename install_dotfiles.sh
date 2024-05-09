@@ -128,11 +128,11 @@ export -f local_patch_append
 export -f install_file
 
 base_path="$1"
-base_path="${base_path:-Unix}"
+base_path="${base_path:-posix}"
 
 # `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
 # `${<VAR>#<pattern>}`` returns <VAR> with the shortest string that matches <pattern> stripped from the front
-# `"{}"`` would be any file in `Unix/` by default
+# `"{}"`` would be any file in `posix/` by default
 find "$base_path" -type f -exec bash -c 'install_file "$1/${0#*/}" "$HOME/${0#*/}"' "{}" "$base_path" \;
 
 unset base_path
