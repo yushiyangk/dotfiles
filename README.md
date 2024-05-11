@@ -10,7 +10,7 @@
 
 1. Edit config files in the `Unix` subdirectory
 2. Commit and push with git
-3. Sync and install config files by running `./sync_dotfiles.sh`
+3. Sync and install config files by running `./dotfiles sync`
 
 A basic understanding of git is strongly recommended.
 
@@ -80,8 +80,9 @@ git push
 ### Syncing and installing config files
 
 Run the command
+
 ```
-./sync_dotfiles.sh
+./dotfiles sync
 ```
 
 This will pull the config files from your personal remote repository, then automatically install them into `~`.
@@ -92,7 +93,7 @@ This will pull the config files from your personal remote repository, then autom
 
 Run
 ```
-./install_dotfiles.sh
+./dotfiles install
 ```
 
 This will install the files currently in the `Unix` subdirectory without pulling from any remote repository.
