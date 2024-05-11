@@ -79,7 +79,7 @@ if [ $quiet -ne 0 ]; then
 fi
 
 # Update from git repository and install
-git pull --ff-only && ./install_dotfiles.sh ${install_args[@]}
+git pull --ff-only && ./install-dotfiles ${install_args[@]}
 
 # Check if bash
 if [ -n "$BASH" ] || [ -n "$BASH_VERSION"]; then
