@@ -5,7 +5,7 @@
 #
 # Yu Shiyang <yu.shiyang@gnayihs.uy>
 
-# Make a copy of a file with a tilde added to its filename.
+# Make a copy of the file with a tilde added to its filename.
 # If a file of the new name already exists, do not make a copy.
 # This function is idempotent.
 # Usage: tildeless <filename>
@@ -49,10 +49,28 @@ tildeless() {
 	fi
 }
 
+# Move the file to the given backup directory (creating it if it does not exist)
+# Usage: backup_file <original_file> <archive_dir>
+archive_file() {
+	file="$1"
+	archive_dir="$2"
+
+	if [ -e "$archive_dir" ]; then
+		if [ ! -d "$archive_dir" ]; then
+			echo "archive_file: $archive_dir exists but is not a directory"
+			return 2
+		fi
+	else
+		mkdir --parents "$archive_dir"
+	fi
+
+	mv "$file" "$archive_dir"
+}
+
 # If a local patch for the file exists, apply it.
 # A local patch for a given file is denoted by filename.local.patch in the same directory.
 # Also appends files locally if one exists, denoted by filename.local.append in the same directory.
-# Usage: local_patch_append <filename> [<source_file_to_patch_from = filename> [<output_filename = filename>]]
+# Usage: local_patch_append <filename> [<source_filename_to_patch_from = filename> [<output_filename = filename>]]
 local_patch_append() {
 	file="$1"
 	source="$2"
@@ -74,10 +92,11 @@ local_patch_append() {
 }
 
 # Install a new file, then apply any local patches and appends in the same directory.
-# Usage: install_file <source_file> <filename_after_install>
+# Usage: install_file <source_file> <filename_after_install> <archive_dir>
 install_file() {
 	source="$1"
 	installed="$2"
+	archive_dir="$3"
 
 	if [ ! -e "$source" ];  then
 		echo "install_file: $source does not exist" 1>&2
@@ -108,7 +127,8 @@ install_file() {
 			echo "Installing '$source' -> '$installed'"
 
 			tildeless "$installed"  # Does not tilde if a tilde file already exists
-			rm "$installed"
+			archive_file "$installed" "$archive_dir"
+			#rm "$installed"
 		else
 			echo "install_file: $installed is not a file" 1>&2
 			return 2
@@ -124,18 +144,20 @@ install_file() {
 }
 
 # Install files from source dir to target dir, and apply any local patches and appends for each file
-# Usage: install_files <source_dir> <target_dir>
+# Usage: install_files <source_dir> <target_dir> <archive_dir>
 install_files() {
 	source_dir="$1"
 	target_dir="$2"
+	archive_dir="$3"
 
 	# `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
 	# `${<VAR>#<pattern>}`` returns <VAR> with the longest string that matches <pattern> stripped from the front
 	# `"{}"`` would be any file in `posix/` by default
-	find "$source_dir" -type f -exec bash -c 'install_file "$0" "$HOME/${0##*/}"' "{}" \;
+	find "$source_dir" -type f -exec bash -c 'install_file "$0" "$HOME/${0##*/}" "$1"' "{}" "$archive_dir" \;
 }
 
 export -f tildeless
+export -f archive_file
 export -f local_patch_append
 export -f install_file
 export -f install_files
@@ -213,12 +235,15 @@ while [ $# -gt 0 ]; do
 done
 
 
+timestamp="$( date +'%Y%m%d-%H%M%S' )"
+archive_dir=".backup/$label-$timestamp"
+
 case "$command" in
 	install)
-		install_files "$label" "$HOME"
+		install_files "$label" "$HOME" "$archive_dir"
 		;;
 	sync)
-		git pull --ff-only && install_files "$label" "$HOME"
+		git pull --ff-only && install_files "$label" "$HOME" "$archive_dir"
 		;;
 	none)
 		echo "$name: missing command, required as first parameter" >& 2
@@ -231,10 +256,14 @@ case "$command" in
 esac
 
 
-unset command
-unset label
-
 unset tildeless
+unset archive_file
 unset local_patch_append
 unset install_file
 unset install_files
+
+unset command
+unset label
+
+unset timestamp
+unset archive_dir
