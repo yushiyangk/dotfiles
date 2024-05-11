@@ -123,26 +123,43 @@ install_file() {
 	local_patch_append "$installed"
 }
 
+# Install files from source dir to target dir, and apply any local patches and appends for each file
+# Usage: install_files <source_dir> <target_dir>
+install_files() {
+	source_dir="$1"
+	target_dir="$2"
+
+	# `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
+	# `${<VAR>#<pattern>}`` returns <VAR> with the longest string that matches <pattern> stripped from the front
+	# `"{}"`` would be any file in `posix/` by default
+	find "$source_dir" -type f -exec bash -c 'install_file "$0" "$HOME/${0##*/}"' "{}" \;
+}
+
 export -f tildeless
 export -f local_patch_append
 export -f install_file
+export -f install_files
 
 
 name='install_dotfiles.sh'
 
-help="Usage: $name [-h] [<options>] [<target>]"
-help="$help\nInstall the current version of dotfiles to the appropriate locations"
+help="Usage: $name [-h] [<options>] <command> [<label>]"
+help="$help\nSync config files with a remote git repository and install them to the local system"
 help="$help\n"
 help="$help\nParameters:"
-help="$help\n  <target>        Target label that describes the local system, which also"
-help="$help\n                  corresponds to the subdirectory of the same name;"
-help="$help\n                  default: posix"
+help="$help\n  <command>       Choices: sync, install"
+help="$help\n                   install - install the current version of config files"
+help="$help\n                   sync - pull the latest version of config files from the"
+help="$help\n                          configured remote git repository, and install them"
+help="$help\n  <label>         label of config files to be installed, corresponding to the"
+help="$help\n                   subdirectory of the same name; default: posix"
 help="$help\n"
 help="$help\nOptions:"
 help="$help\n  -h, -?, --help  Display this help message and exit"
 
 
-target='posix'
+command='none'
+label='posix'
 quiet=0
 
 argi=0
@@ -180,7 +197,10 @@ while [ $# -gt 0 ]; do
 		*)
 			case "$argi" in
 				0)
-					target="$arg"
+					command="$arg"
+					;;
+				1)
+					label="$arg"
 					;;
 				*)
 					echo "$name: unexpected parameter '$arg'" >& 2
@@ -193,13 +213,28 @@ while [ $# -gt 0 ]; do
 done
 
 
-# `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
-# `${<VAR>#<pattern>}`` returns <VAR> with the shortest string that matches <pattern> stripped from the front
-# `"{}"`` would be any file in `posix/` by default
-find "$target" -type f -exec bash -c 'install_file "$1/${0#*/}" "$HOME/${0#*/}"' "{}" "$target" \;
+case "$command" in
+	install)
+		install_files "$label" "$HOME"
+		;;
+	sync)
+		git pull --ff-only && install_files "$label" "$HOME"
+		;;
+	none)
+		echo "$name: missing command, required as first parameter" >& 2
+		exit 3
+		;;
+	*)
+		echo "$name: unknown command '$command'" >& 2
+		exit 4
+		;;
+esac
 
-unset target
+
+unset command
+unset label
 
 unset tildeless
 unset local_patch_append
 unset install_file
+unset install_files
