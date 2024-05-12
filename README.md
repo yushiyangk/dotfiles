@@ -1,14 +1,14 @@
 # Dotfiles
 
-**Dotfiles** helps you sync and install your Unix<sup><a href="#unix">1</a></sup> config files with a single command, backed by shared git repositories<sup><a href="#git">2</a></sup>.
+**Dotfiles** helps you sync and install your POSIX<sup><a href="#posix">1</a></sup> config files with a single command, backed by shared git repositories<sup><a href="#git">2</a></sup>.
 
-<a name="unix"></a><sup>1</sup>e.g. Linux, BSD, macOS
+<a name="posix"></a><sup>1</sup>e.g. Linux, BSD, macOS
 
 <a name="git"></a><sup>2</sup>e.g. hosted on GitHub or GitLab
 
 ### In brief
 
-1. Edit config files in the `Unix` subdirectory
+1. Edit config files in the `posix` subdirectory
 2. Commit and push with git
 3. Sync and install config files by running `./dotfiles sync`
 
@@ -63,11 +63,11 @@ Replace the original remote repository with your personal one by running
 
 User config files are typically found in the home directory (`$HOME` or `~`), with a filename that begins with `.`.
 
-For each config file that needs to be synced, copy it into the `Unix` subdirectory under the same relative path as it was in `~`.
+For each config file that needs to be synced, copy it into the `posix` subdirectory under the same relative path as it was in `~`.
 
 ### Editing config files
 
-Edit files in the `Unix` subdirectory, then `git commit` them as normal. For example, to commit all modified files,
+Edit files in the `posix` subdirectory, then `git commit` them as normal. For example, to commit all modified files,
 <code><pre>git commit -a -m <var>commit_message</var></pre></code>
 
 Update your personal remote repository by running
@@ -96,7 +96,7 @@ Run
 ./dotfiles install
 ```
 
-This will install the files currently in the `Unix` subdirectory without pulling from any remote repository.
+This will install the files currently in the `posix` subdirectory without pulling from any remote repository.
 
 ### System-specific configs
 
@@ -109,7 +109,7 @@ If <code><var>filename</var>.local.patch</code> exists, Dotfiles will attempt to
 #### Creating patch files
 
 One way of creating the patch file would be to first edit the installed config file directly in `~`, then run the following in the Dotfiles directory
-<code><pre>diff -U3 Unix/<var>config_file</var> ~/<var>config_file</var> > ~/<var>config_file</var>.local.patch
+<code><pre>diff -U3 posix/<var>config_file</var> ~/<var>config_file</var> > ~/<var>config_file</var>.local.patch
 ./install_dotfiles.sh</pre></code>
 
 ### Linked personal remote repository
