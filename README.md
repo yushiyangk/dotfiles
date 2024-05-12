@@ -55,7 +55,7 @@ Set up your personal remote repository by following either the next section or t
 Create a new repository on a git hosting service of your choice (e.g. GitHub or GitLab), and note down its git URL.
 
 Replace the original remote repository with your personal one by running
-<code><pre>git remote set-url origin <var>new_remote_url</var></pre></code>
+<pre><code>git remote set-url origin <var>new_remote_url</var></code></pre>
 
 ## Usage
 
@@ -68,7 +68,7 @@ For each config file that needs to be synced, copy it into the `posix` subdirect
 ### Editing config files
 
 Edit files in the `posix` subdirectory, then `git commit` them as normal. For example, to commit all modified files,
-<code><pre>git commit -a -m <var>commit_message</var></pre></code>
+<pre><code>git commit -a -m <var>commit_message</var></code></pre>
 
 Update your personal remote repository by running
 ```
@@ -109,8 +109,8 @@ If <code><var>filename</var>.local.patch</code> exists, Dotfiles will attempt to
 #### Creating patch files
 
 One way of creating the patch file would be to first edit the installed config file directly in `~`, then run the following in the Dotfiles directory
-<code><pre>diff -U3 posix/<var>config_file</var> ~/<var>config_file</var> > ~/<var>config_file</var>.local.patch
-./install_dotfiles.sh</pre></code>
+<pre><code>diff -U3 posix/<var>config_file</var> ~/<var>config_file</var> > ~/<var>config_file</var>.local.patch
+./install_dotfiles.sh</code></pre>
 
 ### Linked personal remote repository
 
@@ -119,11 +119,11 @@ This method for setting up your personal remote repository is more complicated, 
 Create a new repository on a git hosting service of your choice (e.g. GitHub or GitLab), and note down its git URL.
 
 Make a new branch for your personal config files:
-<code><pre>git checkout -b <var>your_branch_name</var></pre></code>
+<pre><code>git checkout -b <var>your_branch_name</var></code></pre>
 
 Add your personal remote repository and set your personal branch to track your personal remote:
-<code><pre>git remote add <var>your_remote_name</var> <var>your_remote_url</var>
-git push --set-upstream <var>your_remote_name</var> <var>your_branch_name</var></pre></code>
+<pre><code>git remote add <var>your_remote_name</var> <var>your_remote_url</var>
+git push --set-upstream <var>your_remote_name</var> <var>your_branch_name</var></code></pre>
 
 Thereafter, add or edit your personal config files as before, but only commit them to your personal branch and push them to your personal remote.
 
@@ -132,8 +132,8 @@ Thereafter, add or edit your personal config files as before, but only commit th
 #### Updating Dotfiles
 
 *If using a linked repository*, remain on your personal branch (or run <code>git checkout <var>your_branch_name</var></code>), and run the following:
-<code><pre>git fetch origin public:public
-git merge public</pre></code>
+<pre><code>git fetch origin public:public
+git merge public</code></pre>
 
 This will fetch the updated version of Dotfiles and merge it into your personal branch.
 
