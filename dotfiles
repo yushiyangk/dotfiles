@@ -12,7 +12,7 @@
 tildeless() {
 	file="$1"
 	if [ ! -e "$file" ]; then
-		echo "tildeless: $file does not exist" 1>&2
+		echo "tildeless: $file does not exist" >& 2
 		return 1
 	fi
 
@@ -20,14 +20,14 @@ tildeless() {
 	if [ -e "$tildefile" ]; then
 		if [ -d "$file" ]; then
 			if [ ! -d "$tildefile" ]; then
-				echo "tildeless: $tildefile already exists but is not a directory" 1>&2
+				echo "tildeless: $tildefile already exists but is not a directory" >& 2
 				return 3
 			else
 				return
 			fi
 		elif [ -f "$file" ]; then
 			if [ ! -f "$tildefile" ]; then
-				echo "tildeless: $tildefile already exists but is not a file" 1>&2
+				echo "tildeless: $tildefile already exists but is not a file" >& 2
 				return 3
 			else
 				return
@@ -44,7 +44,7 @@ tildeless() {
 		cp -a "$tildefile" "$file"
 		chmod a-wx "$tildefile"
 	else
-		echo "tildeless: $file is not a file or a directory" 1>&2
+		echo "tildeless: $file is not a file or a directory" >& 2
 		return 2
 	fi
 }
@@ -57,7 +57,7 @@ archive_file() {
 
 	if [ -e "$archive_dir" ]; then
 		if [ ! -d "$archive_dir" ]; then
-			echo "archive_file: $archive_dir exists but is not a directory"
+			echo "archive_file: $archive_dir exists but is not a directory" >& 2
 			return 2
 		fi
 	else
@@ -99,10 +99,10 @@ install_file() {
 	archive_dir="$3"
 
 	if [ ! -e "$source" ];  then
-		echo "install_file: $source does not exist" 1>&2
+		echo "install_file: $source does not exist" >& 2
 		return 1
 	elif [ ! -f "$source" ]; then
-		echo "install_file: $source is not a file" 1>&2
+		echo "install_file: $source is not a file" >& 2
 		return 2
 	fi
 
@@ -130,7 +130,7 @@ install_file() {
 			archive_file "$installed" "$archive_dir"
 			#rm "$installed"
 		else
-			echo "install_file: $installed is not a file" 1>&2
+			echo "install_file: $installed is not a file" >& 2
 			return 2
 		fi
 	else
