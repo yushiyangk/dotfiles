@@ -92,11 +92,12 @@ local_patch_append() {
 }
 
 # Install a new file, then apply any local patches and appends in the same directory.
-# Usage: install_file <source_file> <filename_after_install> <archive_dir>
+# Usage: install_file <source_file> <filename_after_install> <archive_dir> <quiet_level>
 install_file() {
 	source="$1"
 	installed="$2"
 	archive_dir="$3"
+	quiet="$4"
 
 	if [ ! -e "$source" ];  then
 		echo "install_file: $source does not exist" >& 2
@@ -120,11 +121,15 @@ install_file() {
 			fi
 			if cmp --silent "$installed" "$simulated_installed"; then
 				# Exit if identical
-				echo "Skipping '$source'; aleady installed at '$installed'"
+				if [ $quiet -le 0 ]; then
+					echo "Skipping '$source'; already installed at '$installed'"
+				fi
 				return 0
 			fi
 
-			echo "Installing '$source' -> '$installed'"
+			if [ $quiet -le 1 ]; then
+				echo "Installing '$source' -> '$installed'"
+			fi
 
 			tildeless "$installed"  # Does not tilde if a tilde file already exists
 			archive_file "$installed" "$archive_dir"
@@ -134,7 +139,9 @@ install_file() {
 			return 2
 		fi
 	else
-		echo "Installing '$source' -> '$installed'"
+		if [ $quiet -le 1 ]; then
+			echo "Installing '$source' -> '$installed'"
+		fi
 
 		mkdir -p "${installed%/*}"
 	fi
@@ -144,16 +151,17 @@ install_file() {
 }
 
 # Install files from source dir to target dir, and apply any local patches and appends for each file
-# Usage: install_files <source_dir> <target_dir> <archive_dir>
+# Usage: install_files <source_dir> <target_dir> <archive_dir> <quiet_level>
 install_files() {
 	source_dir="$1"
 	target_dir="$2"
 	archive_dir="$3"
+	quiet="$4"
 
 	# `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
 	# `${<VAR>#<pattern>}`` returns <VAR> with the longest string that matches <pattern> stripped from the front
 	# `"{}"`` would be any file in `posix/` by default
-	find "$source_dir" -type f -exec bash -c 'install_file "$0" "$HOME/${0##*/}" "$1"' "{}" "$archive_dir" \;
+	find "$source_dir" -type f -exec bash -c 'install_file "$0" "$HOME/${0##*/}" "$1" "$2"' "{}" "$archive_dir" "$quiet" \;
 }
 
 export -f tildeless
@@ -177,6 +185,10 @@ help="$help\n  <label>         label of config files to be installed, correspond
 help="$help\n                   subdirectory of the same name; default: posix"
 help="$help\n"
 help="$help\nOptions:"
+help="$help\n  -q, --quiet     Reduce output printing; can be used multiple times, but"
+help="$help\n                   note that error messages will always be printed to stderr"
+help="$help\n                   use once - do not print information about skipped files"
+help="$help\n                   use twice - do not print any status information"
 help="$help\n  -h, -?, --help  Display this help message and exit"
 
 
@@ -240,10 +252,10 @@ archive_dir=".backup/$label-$timestamp"
 
 case "$command" in
 	install)
-		install_files "$label" "$HOME" "$archive_dir"
+		install_files "$label" "$HOME" "$archive_dir" "$quiet"
 		;;
 	sync)
-		git pull --ff-only && install_files "$label" "$HOME" "$archive_dir"
+		git pull --ff-only && install_files "$label" "$HOME" "$archive_dir" "$quiet"
 		;;
 	none)
 		echo "$name: missing command, required as first parameter" >& 2
