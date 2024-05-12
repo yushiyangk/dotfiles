@@ -139,8 +139,10 @@ This will fetch the updated version of Dotfiles and merge it into your personal 
 
 ### Backups
 
-When installing a config file, if a file of the same name is already in `~`, the original version will be renamed to <code><var>filename</var>~</code> (i.e. a tilde will be appended to the filename) as a backup.
+When installing a config file, if a file of the same name already exists, the previously existing file will be backed up to the `.backup` subdirectory, under a subdirectory corresponding to the current timestamp.
 
-If such a backed up file already exists, the existing backup will not be touched, and no new backup will be made. This is intended to back up either default config files distributed with the operating system, or user-edited config files before they were added to the sync.
+#### In-situ backup
 
-After config files have been added to the sync, backups of previous versions can easily be accessed through the git history (run `git log` to find the hash of the relevant commit, then run <code>git show <var>commit</var>:<var>file</var></code>).
+In addition, if a file of the same name already exists, the original version will be renamed to <code><var>filename</var>~</code> (i.e. a tilde will be appended to the filename) in the same directory. However, if such a file already exists, no further copy will be made.
+
+This is intended to provide a quick reference for the default config files distributed with the operating system (or possibly the state of the config files before they were managed by Dotfiles, if different).
