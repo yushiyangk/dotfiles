@@ -163,7 +163,7 @@ export -f install_file
 export -f install_files
 
 
-name='install_dotfiles.sh'
+name='dotfiles'
 
 help="Usage: $name [-h] [<options>] <command> [<label>]"
 help="$help\nSync config files with a remote git repository and install them to the local system"
