@@ -161,7 +161,7 @@ install_files() {
 	# `bash -c '<command> $0 $1' <arg1> <arg2>` executes <command> with <arg1> and <arg2> as its first and second arguments
 	# `${<VAR>#<pattern>}`` returns <VAR> with the longest string that matches <pattern> stripped from the front
 	# `"{}"`` would be any file in `posix/` by default
-	find "$source_dir" -type f -exec bash -c 'install_file "$0" "$HOME/${0##*/}" "$1" "$2"' "{}" "$archive_dir" "$quiet" \;
+	find "$source_dir" -type f -exec bash -c 'install_file "$0" "$2/${0#"$1/"}" "$3" "$4"' "{}" "$source_dir" "$target_dir" "$archive_dir" "$quiet" \;
 }
 
 export -f tildeless
