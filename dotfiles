@@ -84,10 +84,14 @@ local_patch_append() {
 			patch "$source" "$file.local.patch" -o "$output"
 		fi
 		if [ -f "$file.local.append" ]; then
-			cat "$output" "$file.local.append" > "$output"
+			cat "$file.local.append" >> "$output"
 		fi
 	elif [ -f "$file.local.append" ]; then
-		cat "$source" "$file.local.append" > "$output"
+		if [ "$source" = "$output" ]; then
+			cat "$file.local.append" >> "$source"
+		else
+			cat "$source" "$file.local.append" > "$output"
+		fi
 	fi
 }
 
