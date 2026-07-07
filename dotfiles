@@ -79,16 +79,16 @@ local_patch_append() {
 	output="${output:-"$file"}"
 	if [ -f "$file.local.patch" ]; then
 		if [ "$source" = "$output" ]; then
-			patch "$source" "$file.local.patch"
+			patch -s "$source" "$file.local.patch"
 		else
-			patch "$source" "$file.local.patch" -o "$output"
+			patch -s "$source" "$file.local.patch" -o "$output"
 		fi
 		if [ -f "$file.local.append" ]; then
 			cat "$file.local.append" >> "$output"
 		fi
 	elif [ -f "$file.local.append" ]; then
 		if [ "$source" = "$output" ]; then
-			cat "$file.local.append" >> "$source"
+			cat "$file.local.append" >> "$output"
 		else
 			cat "$source" "$file.local.append" > "$output"
 		fi
@@ -119,16 +119,22 @@ install_file() {
 
 			# ${VAR##pattern} returns VAR with the longest matching pattern stripped from the front
 			simulated_installed="/tmp/${installed##*/}.installed"
-			local_patch_append "$installed" "$source" "$simulated_installed" &> /dev/null
-			if [ ! -f "$simulated_installed" ]; then
-				simulated_installed="$source"
+			local_patch_append "$installed" "$source" "$simulated_installed"
+			if [ -f "$simulated_installed" ]; then
+				expected_installed="$simulated_installed"
+			else
+				expected_installed="$source"
 			fi
-			if cmp --silent "$installed" "$simulated_installed"; then
+			if cmp --silent "$installed" "$expected_installed"; then
 				# Exit if identical
 				if [ $quiet -le 0 ]; then
 					echo "Skipping '$source'; already installed at '$installed'"
 				fi
 				return 0
+			fi
+
+			if [ -f "$simulated_installed" ]; then
+				rm "$simulated_installed"
 			fi
 
 			if [ $quiet -le 1 ]; then
