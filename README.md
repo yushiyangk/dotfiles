@@ -132,8 +132,8 @@ Thereafter, add or edit your personal config files as before, but only commit th
 #### Updating Dotfiles
 
 *If using a linked repository*, remain on your personal branch (or run <code>git checkout <var>your_branch_name</var></code>), and run the following:
-<pre><code>git fetch origin public:public
-git merge public</code></pre>
+<pre><code>git fetch origin main
+git merge main</code></pre>
 
 This will fetch the updated version of Dotfiles and merge it into your personal branch.
 

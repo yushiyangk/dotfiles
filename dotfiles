@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Install configuration dotfiles into user home directory.
-# Usage: ./install_dotfiles.sh
+# Usage: ./dotfiles sync
 #
 # Yu Shiyang <yu.shiyang@gnayihs.uy>
 
