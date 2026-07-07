@@ -103,6 +103,8 @@ install_file() {
 	archive_dir="$3"
 	quiet="$4"
 
+	simulation_dir="/tmp/dotfiles"
+
 	if [ ! -e "$source" ];  then
 		echo "install_file: $source does not exist" >& 2
 		return 1
@@ -118,7 +120,8 @@ install_file() {
 			# Check if the installed file has patches or appends
 
 			# ${VAR##pattern} returns VAR with the longest matching pattern stripped from the front
-			simulated_installed="/tmp/${installed##*/}.installed"
+			mkdir -p "$simulation_dir"
+			simulated_installed="$simulation_dir/${installed##*/}.installed"
 			local_patch_append "$installed" "$source" "$simulated_installed"
 			if [ -f "$simulated_installed" ]; then
 				expected_installed="$simulated_installed"
