@@ -61,7 +61,7 @@ archive_file() {
 			return 2
 		fi
 	else
-		mkdir --parents "$archive_dir"
+		mkdir -p "$archive_dir"
 	fi
 
 	mv "$file" "$archive_dir"
