@@ -185,7 +185,7 @@ install_file() {
 		mkdir -p "${installed%/*}"
 	fi
 
-	cp "$source" "$installed"
+	cat "$source" > "$installed"
 	local_patch_append "$installed"
 }
 
