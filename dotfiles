@@ -121,6 +121,12 @@ install_file() {
 	# ${VAR%pattern} returns VAR with the shortest matching pattern stripped from the back
 	if [ -e "$installed" ]; then
 		if [ -f "$installed" ]; then
+			if [ -h "$installed" ]; then
+				# If install location is a symlink, install to its target instead
+				symlink="$installed"
+				installed="$(realpath "$installed")"
+			fi
+
 			# Exit if there will be no change after installation
 			# Check if the installed file has patches or appends
 
@@ -136,7 +142,11 @@ install_file() {
 			if cmp --silent "$installed" "$expected_installed"; then
 				# Exit if identical
 				if [ $quiet -le 0 ]; then
-					echo "Skipping '$source'; already installed at '$installed'"
+					if [ -n "$symlink" ]; then
+						echo "Skipping '$source'; already installed at '$symlink' -> '$installed'"
+					else
+						echo "Skipping '$source'; already installed at '$installed'"
+					fi
 				fi
 				return 0
 			fi
@@ -146,14 +156,18 @@ install_file() {
 			fi
 
 			if [ $quiet -le 1 ]; then
-				echo "Installing '$source' -> '$installed'"
+				if [ -n "$symlink" ]; then
+					echo "Installing '$source' to '$symlink' -> '$installed'"
+				else
+					echo "Installing '$source' to '$installed'"
+				fi
 			fi
 
 			tildeless "$installed"  # Does not tilde if a tilde file already exists
 			archive_file "$installed" "$archive_dir"
 			#rm "$installed"
 		else
-			echo "install_file: $installed is not a file" >& 2
+			echo "install_file: $installed is not a regular file" >& 2
 			return 2
 		fi
 	else
