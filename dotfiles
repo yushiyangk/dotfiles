@@ -65,7 +65,7 @@ archive_file() {
 		mkdir -p "$archive_dir"
 	fi
 
-	mv "$file" "$archive_dir"
+	cp -a "$file" "$archive_dir"
 }
 
 # If a local patch for the file exists, apply it.
@@ -170,7 +170,6 @@ install_file() {
 				tildeless "$installed"  # Does not tilde if a tilde file already exists
 			fi
 			archive_file "$installed" "$archive_dir"
-			#rm "$installed"
 		else
 			echo "install_file: $installed is not a regular file" >& 2
 			return 2
