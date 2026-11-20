@@ -11,12 +11,15 @@
 # Usage: tildeless <filename>
 tildeless() {
 	file="$1"
+	tildefile="$2"
 	if [ ! -e "$file" ]; then
 		echo "tildeless: $file does not exist" >& 2
 		return 1
 	fi
+	if [ -z "$tildefile" ]; then
+		tildefile="$file~"
+	fi
 
-	tildefile="$file~"
 	if [ -e "$tildefile" ]; then
 		if [ -d "$file" ]; then
 			if [ ! -d "$tildefile" ]; then
@@ -163,7 +166,11 @@ install_file() {
 				fi
 			fi
 
-			tildeless "$installed"  # Does not tilde if a tilde file already exists
+			if [ -n "$symlink" ]; then
+				tildeless "$installed" "$symlink~"
+			else
+				tildeless "$installed"  # Does not tilde if a tilde file already exists
+			fi
 			archive_file "$installed" "$archive_dir"
 			#rm "$installed"
 		else
