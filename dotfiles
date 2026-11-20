@@ -39,12 +39,10 @@ tildeless() {
 	fi
 
 	if [ -d "$file" ]; then
-		mv "$file" "$tildefile"
-		cp -a "$tildefile" "$file"
+		cp -a "$file" "$tildefile"
 		chmod -R --preserve-root a-wx,+X "$tildefile"
 	elif [ -f "$file" ]; then
-		mv "$file" "$tildefile"
-		cp -a "$tildefile" "$file"
+		cp -a "$file" "$tildefile"
 		chmod a-wx "$tildefile"
 	else
 		echo "tildeless: $file is not a file or a directory" >& 2
