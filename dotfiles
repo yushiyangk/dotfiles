@@ -109,8 +109,13 @@ install_file() {
 		echo "install_file: $source does not exist" >& 2
 		return 1
 	elif [ ! -f "$source" ]; then
-		echo "install_file: $source is not a file" >& 2
-		return 2
+		if [ -h "$source" ]; then
+			echo "install_file: $source is a broken symlink" >& 2
+			return 4
+		else
+			echo "install_file: $source is not a regular file" >& 2
+			return 2
+		fi
 	fi
 
 	# ${VAR%pattern} returns VAR with the shortest matching pattern stripped from the back
