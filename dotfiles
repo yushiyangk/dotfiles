@@ -183,7 +183,11 @@ install_file() {
 	fi
 
 	cat "$source" > "$installed"
-	local_patch_append "$installed"
+	if [ -n "$symlink" ]; then
+		local_patch_append "$symlink" "$installed" "$installed"
+	else
+		local_patch_append "$installed"
+	fi
 }
 
 # Install files from source dir to target dir, and apply any local patches and appends for each file
